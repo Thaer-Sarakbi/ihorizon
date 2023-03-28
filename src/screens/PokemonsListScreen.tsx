@@ -8,6 +8,7 @@ import { PokemonType } from '../types/types';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamsList } from '../stack/PokemonsStack';
 import { AppDispatch } from '../redux/store';
+import Header from '../components/Header';
  
 interface MyState {
   pokemons: {
@@ -22,12 +23,13 @@ function PokemonsListScreen({ navigation } :  StackScreenProps<RootStackParamsLi
 const pokemons = useSelector((state: MyState) => state.pokemons.data)
 const status = useSelector((state: MyState) => state.pokemons.status)
 const error = useSelector((state: MyState) => state.pokemons.error)
-console.log(status)
 
 const dispatch = useDispatch<AppDispatch>()
 
   const onRefresh = () => {
-
+    setIsFetching(true)
+    dispatch(getPokemons())
+    setIsFetching(false)
   }
 
   useEffect(() => {
@@ -41,26 +43,6 @@ const renderItem = ({ item, index }: { item: PokemonType, index: number }) => {
 
   }
 
-// if(pokemons === undefined){
-//     return(
-//       <View style={{ flex: 1 , justifyContent: 'center', alignItems: 'center'}}>
-//         <AnimatedLottieView source={require('../assets/loading.json')} autoPlay loop/>
-//       </View>
-//     )
-// } else {
-//     return (
-//         <View style={{ flex: 1, paddingTop: 10, paddingHorizontal: 10 }}>
-//             <FlatList
-//             // keyExtractor={(index) => index}
-//             data={pokemons}
-//             renderItem={renderItem}
-//             onRefresh= {() => onRefresh()}
-//             refreshing={isFetching}
-//             />
-//       </View>
-//       );
-// }
-
 if(status === 'loading'){
   return(
     <View style={{ flex: 1 , justifyContent: 'center', alignItems: 'center'}}>
@@ -69,14 +51,18 @@ if(status === 'loading'){
   )
 } else if(status === 'succeeded'){
   return (
+    <>
+      <Header details={false} title={'PokeReact'} navigation = {navigation} />
       <View style={{ flex: 1, paddingTop: 10, paddingHorizontal: 10 }}>
+
           <FlatList
           data={pokemons}
           renderItem={renderItem}
           onRefresh= {() => onRefresh()}
           refreshing={isFetching}
           />
-    </View>
+      </View>
+    </>
     );
 } else if(status === 'failed'){
   return(

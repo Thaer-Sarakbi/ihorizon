@@ -30,7 +30,6 @@ function PokemonDetailsScreen({ route, navigation } : Props): JSX.Element {
   const pokemon = useSelector((state : MyState) => state.pokemons.pokemon)
   const status = useSelector((state : MyState) => state.pokemons.status)
   const error = useSelector((state : MyState) => state.pokemons.error)
-  console.log(pokemon)
 
   const dispatch = useDispatch<AppDispatch>()
 
@@ -47,7 +46,7 @@ function PokemonDetailsScreen({ route, navigation } : Props): JSX.Element {
 } else if(status === 'succeeded'){
   return (
     <View style = {{  }}>
-      <Header title={pokemon.name} navigation = {navigation} />
+      <Header details={true} title={pokemon.name} navigation = {navigation} />
     
       <View style = {{  justifyContent: 'flex-start', alignItems: 'center', paddingTop: 20 }}>
         { pokemon.image ? <Image source={{ uri: pokemon.image }} style = {{ width: 200, height: 200 }} /> : null}

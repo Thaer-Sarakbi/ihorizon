@@ -5,12 +5,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 function Pokemon({ item, index, navigation }): JSX.Element {
     const [pokemon, setPokemon] = useState(null)
-    console.log(pokemon)
 
     useEffect(() => {
         axios.get(item.url)
         .then(function (response) {
-        //   console.log(response.data.sprites.front_default);
           setPokemon({ name: item.name, image: response.data.sprites.front_default, id: response.data.id })
         })
         .catch(function (error) {

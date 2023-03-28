@@ -17,6 +17,7 @@ interface Pokemon {
 }
 interface MyState {
   data: Array<PokemonList>,
+  pokemon: PokemonType,
   status: string,
   error: string | undefined
 }
@@ -84,7 +85,6 @@ const pokemonSlice = createSlice({
         state.status = 'loading'
       })
       .addCase(getPokemon.fulfilled, (state, {payload}) => {
-        console.log(payload)
         state.status = 'succeeded'
         // Add any fetched posts to the array
         state.pokemon = payload

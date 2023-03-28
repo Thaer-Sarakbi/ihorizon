@@ -9,12 +9,14 @@ let height = Dimensions.get('screen').height;
 
 interface Props {
   title: string,
-  navigation: any
+  navigation: any,
+  details: boolean
 }
 
 const Header = ({
   title,
-  navigation
+  navigation,
+  details
 } : Props) => {
   return (
     <>
@@ -23,7 +25,7 @@ const Header = ({
           <TouchableOpacity onPress={() => {
             navigation.goBack()
           }}>
-            <Icon name="arrow-left" style={styles.icon} size={25} />
+            {details && <Icon name="arrow-left" style={styles.icon} size={25} />}
           </TouchableOpacity>
           <Text style={styles.title}>{title}</Text>
         </View>
