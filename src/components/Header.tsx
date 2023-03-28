@@ -2,46 +2,32 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, StatusBar, Text, Dimensions } from 'react-native';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { RootStackParamsList } from '../stack/PokemonsStack';
+import { StackScreenProps } from '@react-navigation/stack';
 
 let height = Dimensions.get('screen').height;
 
+interface Props {
+  title: string,
+  navigation: any
+}
+
 const Header = ({
   title,
-  navigation,
-  extraButton,
-  onBack,
-  bottom
-}) => {
+  navigation
+} : Props) => {
   return (
     <>
-      {/* <StatusBar transparent={false} styles={{ position: 'absolute' }} /> */}
       <View style={styles.container}>
         <View style={styles.row}>
           <TouchableOpacity onPress={() => {
-            if (onBack) {
-              onBack()
-            }
-            else {
-              navigation.goBack()
-
-            }
+            navigation.goBack()
           }}>
             <Icon name="arrow-left" style={styles.icon} size={25} />
           </TouchableOpacity>
           <Text style={styles.title}>{title}</Text>
         </View>
-        {extraButton && extraButton.title && (
-          <TouchableOpacity
-            style={extraButton.buttonStyle}
-            onPress={() => extraButton.onPress()}>
-            <Text style={[styles.link, extraButton.textStyle]}>
-              {extraButton.title}
-            </Text>
-          </TouchableOpacity>
-        )}
-        
       </View>
-      {bottom && bottom()}
     </>
   );
 };
@@ -64,10 +50,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    // borderBottomLeftRadius: 7,
-    // borderBottomRightRadius: 7,
-    // marginTop: 40,
+    paddingHorizontal: 15
   },
   row: {
     flexDirection: 'row',
@@ -80,10 +63,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
-    color: '#333333',
     fontWeight: 'bold',
     alignSelf: 'center',
-    color: '#fff'
+    color: 'white'
   },
   link: {
     fontSize: 15,

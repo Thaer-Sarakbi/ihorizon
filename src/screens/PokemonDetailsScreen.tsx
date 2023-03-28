@@ -7,13 +7,32 @@ import Spec from '../components/Spec';
 import { useSelector, useDispatch } from 'react-redux';
 import { getPokemon } from '../redux/pokemonSlice';
 import AnimatedLottieView from 'lottie-react-native';
+import { RootStackParamsList } from '../stack/PokemonsStack';
+import { RouteProp } from "@react-navigation/native"
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AppDispatch } from '../redux/store';
+import { PokemonType } from '../types/types';
 
-function PokemonDetailsScreen({ route, navigation }): JSX.Element {
-  const pokemon = useSelector((state) => state.pokemons.pokemon)
-  const status = useSelector((state) => state.pokemons.status)
+interface Props {
+  route: RouteProp<RootStackParamsList, "PokemonDetails">
+  navigation: StackNavigationProp<RootStackParamsList, "PokemonDetails">
+}
+
+interface MyState {
+  pokemons: {
+    pokemon: PokemonType,
+    status: string,
+    error: string
+  }
+}
+
+function PokemonDetailsScreen({ route, navigation } : Props): JSX.Element {
+  const pokemon = useSelector((state : MyState) => state.pokemons.pokemon)
+  const status = useSelector((state : MyState) => state.pokemons.status)
+  const error = useSelector((state : MyState) => state.pokemons.error)
   console.log(pokemon)
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
     dispatch(getPokemon(route.params.id))
@@ -25,7 +44,7 @@ function PokemonDetailsScreen({ route, navigation }): JSX.Element {
         <AnimatedLottieView source={require('../assets/loading.json')} autoPlay loop/>
       </View>
     )
-} else {
+} else if(status === 'succeeded'){
   return (
     <View style = {{  }}>
       <Header title={pokemon.name} navigation = {navigation} />
@@ -44,6 +63,16 @@ function PokemonDetailsScreen({ route, navigation }): JSX.Element {
       </View>
     </View>
   );
+} else if(status === 'failed'){
+    return(
+      <View>
+        <Text>{error}</Text>
+      </View>
+    )
+} else {
+  return(
+    <View />
+  )
 }
 
 

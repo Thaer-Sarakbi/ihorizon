@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { PokemonType } from '../types/types'
 
 interface PokemonList {
   id: number,
@@ -16,13 +17,11 @@ interface Pokemon {
 }
 interface MyState {
   data: Array<PokemonList>,
-  // pokemon: Pokemon,
   status: string,
   error: string | undefined
 }
 
 export const getPokemons = createAsyncThunk("pokemons/getPokemons", async () => {
-//   let carsList: Array<Car> = []
 let pokemonsList: Array<Pokemon> = []
 
 await axios.get(`https://pokeapi.co/api/v2/pokemon/`)
@@ -30,21 +29,17 @@ await axios.get(`https://pokeapi.co/api/v2/pokemon/`)
     pokemonsList.push(response.data.results)
     })
     .catch(function (error) {
-      console.log(error);
+      throw error
     });
 
   return pokemonsList[0]
 })
 
-export const getPokemon = createAsyncThunk("pokemons/getPokemon", async (id) => {
-  //   let carsList: Array<Car> = []
+export const getPokemon = createAsyncThunk("pokemons/getPokemon", async (id : number) => {
   let pokemon 
   
   await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
       .then(function (response) {
-      //   console.log(response.data.sprites.front_default);
-      //   data.push({ name: response.data.name })
-      // pokemonsList.push(response.data.results)
       pokemon = { name: response.data.name, 
                        image: response.data.sprites.front_default, 
                        height: response.data.height + ' cm', 
@@ -53,10 +48,9 @@ export const getPokemon = createAsyncThunk("pokemons/getPokemon", async (id) => 
         // })
       })
       .catch(function (error) {
-        console.log(error);
+        throw error
       });
-  
-      // console.log(pokemonsList)
+
     return pokemon
   })
 
@@ -94,6 +88,10 @@ const pokemonSlice = createSlice({
         state.status = 'succeeded'
         // Add any fetched posts to the array
         state.pokemon = payload
+      })
+      .addCase(getPokemon.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
       })
   }
 })

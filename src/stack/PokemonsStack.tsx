@@ -1,5 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack"
 import React from "react"
+import Header from "../components/Header"
 import Pokemon from "../components/Pokemon"
 import PokemonDetailsScreen from "../screens/PokemonDetailsScreen"
 import PokemonsListScreen from "../screens/PokemonsListScreen"
@@ -10,53 +11,12 @@ import PokemonsListScreen from "../screens/PokemonsListScreen"
 // const Stack = createStackNavigator<RootStackParamsList>()
 const PokemonStack = createStackNavigator()
 
-// export type RootStackParamsList = {
-//   HomeScreen: undefined,
-//   CarDetails: {
-//     carId: string
-//   },
-//   carsScreen: undefined,
-//   SettingsScreen: undefined,
-//   Map: {
-//     latitude: number,
-//     longitude: number
-//   },
-//   Reserved: {
-//     cars: {
-//       id: string,
-//       latitude: number,
-//       longitude: number,
-//       image: string,
-//       name: string,
-//       description: string,
-//       length: number
-//     }
-//   },
-//   Active: {
-//     cars: {
-//       id: string,
-//       latitude: number,
-//       longitude: number,
-//       image: string,
-//       name: string,
-//       description: string,
-//       length: number
-//     }
-//   },
-//   AllCars: {
-//     cars: {
-//       id: string,
-//       latitude: number,
-//       longitude: number,
-//       image: string,
-//       name: string,
-//       description: string,
-//       length: number
-//     }
-//   },
-//   ShareModal: undefined,
-//   BottomTab: undefined
-// }
+export type RootStackParamsList = {
+  PokemonsList: undefined,
+  PokemonDetails: {
+    id: number
+  }
+}
 
 const PokemonsStack = () => {
   return(
@@ -69,6 +29,11 @@ const PokemonsStack = () => {
         <PokemonStack.Screen
           name='PokemonDetails'
           component={PokemonDetailsScreen}
+          options={{ headerShown: false }}
+        />
+        <PokemonStack.Screen
+          name='Header'
+          component={Header}
           options={{ headerShown: false }}
         />
     </PokemonStack.Navigator>

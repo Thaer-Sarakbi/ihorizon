@@ -4,7 +4,7 @@ import { View, StyleSheet, Text } from 'react-native';
 const Spec = ({
   title,
   value
-}) => {
+} : { title: string, value: string}) => {
 
   if(Array.isArray(value)){
     return(

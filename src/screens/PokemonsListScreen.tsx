@@ -1,21 +1,30 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Pokemon from '../components/Pokemon';
 import { getPokemon, getPokemons } from '../redux/pokemonSlice';
 import AnimatedLottieView from 'lottie-react-native';
-import { useGetPokemonsQuery } from '../redux/apiServices';
+import { PokemonType } from '../types/types';
+import { StackScreenProps } from '@react-navigation/stack';
+import { RootStackParamsList } from '../stack/PokemonsStack';
+import { AppDispatch } from '../redux/store';
  
-function PokemonsListScreen({ navigation }): JSX.Element {
-  const [isFetching, setIsFetching] = useState(false)
-const pokemons = useSelector((state) => state.pokemons.data)
-const status = useSelector((state) => state.pokemons.status)
-// console.log(pokemons)
-// const { data } = useGetPokemonsQuery()
-// console.log(data)
+interface MyState {
+  pokemons: {
+    data: Array<PokemonType>,
+    status: string,
+    error: string
+  }
+}
 
-const dispatch = useDispatch()
+function PokemonsListScreen({ navigation } :  StackScreenProps<RootStackParamsList, 'PokemonsList'>): JSX.Element {
+  const [isFetching, setIsFetching] = useState(false)
+const pokemons = useSelector((state: MyState) => state.pokemons.data)
+const status = useSelector((state: MyState) => state.pokemons.status)
+const error = useSelector((state: MyState) => state.pokemons.error)
+console.log(status)
+
+const dispatch = useDispatch<AppDispatch>()
 
   const onRefresh = () => {
 
@@ -23,45 +32,62 @@ const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getPokemons())
-
-    // axios.get('https://pokeapi.co/api/v2/pokemon/')
-    // .then(function (response) {
-    //     // console.log(response.data.results)
-    // //   console.log(response.data.sprites.front_default);
-    // //   data.push({ name: response.data.name })
-    //   setPokemons(response.data.results)
-    // })
-    // .catch(function (error) {
-    //   console.log(error);
-    // });
-
 },[])
 
-const renderItem = ({ item, index }) => {
+const renderItem = ({ item, index }: { item: PokemonType, index: number }) => {
     return(
         <Pokemon item={item} index={index} navigation={navigation} />
       )
 
   }
 
-if(pokemons === undefined){
-    return(
-      <View style={{ flex: 1 , justifyContent: 'center', alignItems: 'center'}}>
-        <AnimatedLottieView source={require('../assets/loading.json')} autoPlay loop/>
-      </View>
-    )
+// if(pokemons === undefined){
+//     return(
+//       <View style={{ flex: 1 , justifyContent: 'center', alignItems: 'center'}}>
+//         <AnimatedLottieView source={require('../assets/loading.json')} autoPlay loop/>
+//       </View>
+//     )
+// } else {
+//     return (
+//         <View style={{ flex: 1, paddingTop: 10, paddingHorizontal: 10 }}>
+//             <FlatList
+//             // keyExtractor={(index) => index}
+//             data={pokemons}
+//             renderItem={renderItem}
+//             onRefresh= {() => onRefresh()}
+//             refreshing={isFetching}
+//             />
+//       </View>
+//       );
+// }
+
+if(status === 'loading'){
+  return(
+    <View style={{ flex: 1 , justifyContent: 'center', alignItems: 'center'}}>
+      <AnimatedLottieView source={require('../assets/loading.json')} autoPlay loop/>
+    </View>
+  )
+} else if(status === 'succeeded'){
+  return (
+      <View style={{ flex: 1, paddingTop: 10, paddingHorizontal: 10 }}>
+          <FlatList
+          data={pokemons}
+          renderItem={renderItem}
+          onRefresh= {() => onRefresh()}
+          refreshing={isFetching}
+          />
+    </View>
+    );
+} else if(status === 'failed'){
+  return(
+    <View>
+      <Text>{error}</Text>
+    </View>
+  )
 } else {
-    return (
-        <View style={{ flex: 1, paddingTop: 10, paddingHorizontal: 10 }}>
-            <FlatList
-            // keyExtractor={(index) => index}
-            data={pokemons}
-            renderItem={renderItem}
-            onRefresh= {() => onRefresh()}
-            refreshing={isFetching}
-            />
-      </View>
-      );
+  return(
+    <View />
+  )
 }
 }
 
